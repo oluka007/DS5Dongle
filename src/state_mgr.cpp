@@ -58,29 +58,66 @@ void state_update(const uint8_t *data, const uint8_t size) {
             memcpy(state + offset, data + offset, length);
         }
     };
-
-    const auto copy_field = [&](const bool allowed, const size_t offset, const auto &field) {
-        copy_if_allowed(allowed, offset, sizeof(field));
+    auto set_bit = [](uint8_t& byte, int bit, bool value) {
+        byte = (byte & ~(1 << bit)) | (value << bit);
     };
 
-    /*copy_if_allowed(
-        update.EnableRumbleEmulation || update.UseRumbleNotHaptics,
+    set_bit(state[0],1,update.UseRumbleNotHaptics);
+    set_bit(state[38],2,update.EnableImprovedRumbleEmulation);
+    copy_if_allowed(
+        update.EnableRumbleEmulation,
         offsetof(SetStateData, RumbleEmulationRight),
         2
-    );*/
-    // copy_field(update.AllowHeadphoneVolume, offsetof(SetStateData, VolumeHeadphones), update.VolumeHeadphones);
-    // copy_field(update.AllowSpeakerVolume, offsetof(SetStateData, VolumeSpeaker), update.VolumeSpeaker);
-    // copy_field(update.AllowMicVolume, offsetof(SetStateData, VolumeMic), update.VolumeMic);
+    );
+
+    // copy_if_allowed(update.AllowHeadphoneVolume, offsetof(SetStateData, VolumeHeadphones),
+    //                 sizeof(update.VolumeHeadphones));
+    // copy_if_allowed(update.AllowSpeakerVolume, offsetof(SetStateData, VolumeSpeaker),
+    //                 sizeof(update.VolumeSpeaker));
+    // copy_if_allowed(update.AllowMicVolume, offsetof(SetStateData, VolumeMic), sizeof(update.VolumeMic));
     // copy_if_allowed(update.AllowAudioControl, kAudioControlOffset, sizeof(uint8_t));
-    copy_field(update.AllowMuteLight, offsetof(SetStateData, MuteLightMode), update.MuteLightMode);
+
+    copy_if_allowed(
+        update.AllowMuteLight,
+        offsetof(SetStateData, MuteLightMode),
+        sizeof(update.MuteLightMode)
+    );
+
     // copy_if_allowed(update.AllowAudioMute, kMuteControlOffset, sizeof(uint8_t));
-    copy_field(update.AllowRightTriggerFFB, offsetof(SetStateData, RightTriggerFFB), update.RightTriggerFFB);
-    copy_field(update.AllowLeftTriggerFFB, offsetof(SetStateData, LeftTriggerFFB), update.LeftTriggerFFB);
+
+    copy_if_allowed(
+        update.AllowRightTriggerFFB,
+        offsetof(SetStateData, RightTriggerFFB),
+        sizeof(update.RightTriggerFFB)
+    );
+    copy_if_allowed(
+        update.AllowLeftTriggerFFB,
+        offsetof(SetStateData, LeftTriggerFFB),
+        sizeof(update.LeftTriggerFFB)
+    );
+
     // copy_if_allowed(update.AllowMotorPowerLevel, kMotorPowerLevelOffset, sizeof(uint8_t));
     // copy_if_allowed(update.AllowAudioControl2, kAudioControl2Offset, sizeof(uint8_t));
     // copy_if_allowed(update.AllowHapticLowPassFilter, kHapticLowPassFilterOffset, sizeof(uint8_t));
-    copy_field(update.AllowColorLightFadeAnimation, offsetof(SetStateData, LightFadeAnimation), update.LightFadeAnimation);
-    copy_field(update.AllowLightBrightnessChange, offsetof(SetStateData, LightBrightness), update.LightBrightness);
-    copy_if_allowed(update.AllowPlayerIndicators, kPlayerIndicatorsOffset, sizeof(uint8_t));
-    copy_if_allowed(update.AllowLedColor, offsetof(SetStateData, LedRed), sizeof(update.LedRed) * 3);
+
+    copy_if_allowed(
+        update.AllowColorLightFadeAnimation,
+        offsetof(SetStateData, LightFadeAnimation),
+        sizeof(update.LightFadeAnimation)
+    );
+    copy_if_allowed(
+        update.AllowLightBrightnessChange,
+        offsetof(SetStateData, LightBrightness),
+        sizeof(update.LightBrightness)
+    );
+    copy_if_allowed(
+        update.AllowPlayerIndicators,
+        kPlayerIndicatorsOffset,
+        sizeof(uint8_t)
+    );
+    copy_if_allowed(
+        update.AllowLedColor,
+        offsetof(SetStateData, LedRed),
+        sizeof(update.LedRed) * 3
+    );
 }
