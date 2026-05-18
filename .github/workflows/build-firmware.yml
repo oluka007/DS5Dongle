@@ -188,21 +188,21 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          path: artifacts/ds5-bridge.uf2
+          path: artifacts/ds5-bridge${{ inputs.asset_suffix }}.uf2
           archive: false
           if-no-files-found: error
 
       - name: Upload Debug UF2 artifact
         uses: actions/upload-artifact@v7
         with:
-          path: artifacts/ds5-bridge-debug.uf2
+          path: artifacts/ds5-bridge-debug${{ inputs.asset_suffix }}.uf2
           archive: false
           if-no-files-found: error
 
       - name: Upload PicoW UF2 artifact
         uses: actions/upload-artifact@v7
         with:
-          path: artifacts/ds5-bridge-picow.uf2
+          path: artifacts/ds5-bridge-picow${{ inputs.asset_suffix }}.uf2
           archive: false
           if-no-files-found: error
 
